@@ -10,14 +10,12 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
 
-import com.paulhammant.ngwebdriver.NgWebDriver;
 import com.testvagrant.commons.entities.DeviceDetails;
 
 import io.appium.java_client.AppiumDriver;
