@@ -3,4 +3,7 @@
 .project
 .idea
 .settings
-
+*.iml
+target
+test-output/
+reports
