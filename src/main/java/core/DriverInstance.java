@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import lombok.extern.java.Log;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -27,10 +27,11 @@ import io.appium.java_client.remote.MobilePlatform;
 import io.appium.java_client.service.local.AppiumServerHasNotBeenStartedLocallyException;
 import utilities.ConfigReader;
 
+@Log
 public class DriverInstance {
 
 	private static DriverInstance instance;
-	private static final Logger Log = Logger.getLogger(DriverInstance.class);
+
 	private static final ThreadLocal<AppiumDriver<WebElement>> appiumDriver = new ThreadLocal<AppiumDriver<WebElement>>();
 	private static final ThreadLocal<DesiredCapabilities> cap = new ThreadLocal<DesiredCapabilities>();
 
@@ -91,7 +92,7 @@ public class DriverInstance {
 	public synchronized void quitAppiumDriver() {
 
 		if (appiumDriver.get() != null) {
-			Log.info("quitting appium session");
+			log.info("quitting appium session");
 
 			try {
 				List<LogEntry> logEntries = appiumDriver.get().manage().logs().get("driver").getAll();
@@ -112,9 +113,7 @@ public class DriverInstance {
 	}
 
 	/**
-	 * 
-	 * @param deviceName
-	 * @param deviceUDID
+	 *
 	 * @param systemPort
 	 * @return {@link DesiredCapabilities}
 	 */
@@ -158,7 +157,6 @@ public class DriverInstance {
 	 * @param deviceDetails
 	 * @param systemPort
 	 * @param appiumPort
-	 * @param cap
 	 * @return {@link AndroidDriver}
 	 */
 	private synchronized AndroidDriver<WebElement> createAndroidDriver(DeviceDetails deviceDetails, String systemPort,
@@ -176,9 +174,9 @@ public class DriverInstance {
 				appiumServiceUrl = AppiumServer.startServer(Integer.valueOf(appiumPort)).getUrl();
 			}
 
-			Log.info("initializing android driver");
+			log.info("initializing android driver");
 			appiumDriver.set(new AndroidDriver<WebElement>(appiumServiceUrl, cap.get()));
-			Log.info("android driver initialized");
+			log.info("android driver initialized");
 
 		} catch (AppiumServerHasNotBeenStartedLocallyException e) {
 			e.printStackTrace();

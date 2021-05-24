@@ -4,33 +4,29 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import org.apache.log4j.Logger;
 
+import lombok.extern.java.Log;
 import io.appium.java_client.remote.MobilePlatform;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServerHasNotBeenStartedLocallyException;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.AndroidServerFlag;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
+
 import utilities.ConfigReader;
 
+@Log
 public class AppiumServer {
 
-	private static final Logger log = Logger.getLogger(AppiumServer.class);
 
 	private AppiumServer() {
 	}
 
 	private static final ThreadLocal<AppiumDriverLocalService> appiumService = new ThreadLocal<AppiumDriverLocalService>();
-	private static String NodeModulesAppiumMainJs = System.getProperty("user.home") + File.separator
-			+ "AppData\\Roaming\\npm\\node_modules\\appium\\build\\lib\\main.js";
-	private static String NodePath = "C:\\Program Files\\nodejs\\node.exe";
 
 	public static AppiumDriverLocalService startServer(int port) throws Exception {
 
 		AppiumServiceBuilder appiumServiceBuilder = new AppiumServiceBuilder();
-		appiumServiceBuilder.withAppiumJS(new File(NodeModulesAppiumMainJs));
-		appiumServiceBuilder.usingDriverExecutable(new File(NodePath));
 		appiumServiceBuilder.withIPAddress(ConfigReader.getProperty("ip"));
 		appiumServiceBuilder.usingPort(port);
 		appiumServiceBuilder.withArgument(GeneralServerFlag.SESSION_OVERRIDE);
@@ -55,8 +51,6 @@ public class AppiumServer {
 	public static AppiumDriverLocalService startServerOnAnyPort() throws Exception {
 
 		AppiumServiceBuilder appiumServiceBuilder = new AppiumServiceBuilder();
-		appiumServiceBuilder.withAppiumJS(new File(NodeModulesAppiumMainJs));
-		appiumServiceBuilder.usingDriverExecutable(new File(NodePath));
 		appiumServiceBuilder.withIPAddress(ConfigReader.getProperty("ip"));
 		appiumServiceBuilder.usingAnyFreePort();
 		appiumServiceBuilder.withArgument(GeneralServerFlag.SESSION_OVERRIDE);

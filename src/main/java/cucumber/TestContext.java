@@ -1,15 +1,17 @@
 package cucumber;
 
-import org.apache.log4j.Logger;
+
 
 import core.CoreFunctions;
 import core.DriverInstance;
 import io.appium.java_client.remote.MobilePlatform;
+import lombok.extern.java.Log;
 import utilities.ConfigReader;
 
+@Log
 public class TestContext {
 
-	private static Logger Log = Logger.getLogger(TestContext.class);
+
 
 	private ScenarioContext scenarioContext;
 	private PageObjManager pages;
@@ -20,7 +22,7 @@ public class TestContext {
 	}
 
 	public TestContext log(String message) {
-		Log.info(message);
+		log.info(message);
 		return this;
 	}
 

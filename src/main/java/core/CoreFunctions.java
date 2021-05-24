@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import lombok.extern.java.Log;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
@@ -19,9 +19,10 @@ import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 
+@Log
 public class CoreFunctions {
 
-	public static Logger log = Logger.getLogger(CoreFunctions.class);
+
 	private AppiumDriver<WebElement> appiumDriver;
 
 	public CoreFunctions(AppiumDriver<WebElement> appiumDriver) {
