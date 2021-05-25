@@ -1,40 +1,47 @@
 package utilities;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import io.appium.java_client.remote.MobilePlatform;
+import lombok.extern.java.Log;
+
+import java.io.*;
 import java.util.Properties;
 
+@Log
 public class ConfigReader {
 
-	private static Properties properties = null;
-	private static String filepath = "src/test/resources/configuration.properties";
+    private static Properties properties = null;
 
-	static {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(filepath));
-			properties = new Properties();
-			properties.load(reader);
-			reader.close();
-		} catch (FileNotFoundException e) {
-			System.err.println("file not found " + filepath);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    static {
 
-	}
+        String filepath = null;
 
-	/**
-	 * 
-	 * @param configname
-	 * @return
-	 */
-	public static String getProperty(String configname) {
+        if (System.getProperty("platformName").equals(MobilePlatform.ANDROID)) {
+            filepath = "src" + File.separator + "test" + File.separator + "resources" + File.separator + "android_config.properties";
+        } else if (System.getProperty("platformName").equals(MobilePlatform.IOS)) {
+            filepath = "src" + File.separator + "test" + File.separator + "resources" + File.separator + "ios_config.properties";
+        } else {
+            log.severe("config file not found");
+        }
 
-		return properties.getProperty(configname);
+        try (BufferedReader reader = new BufferedReader(new FileReader(filepath))) {
+            properties = new Properties();
+            properties.load(reader);
+        } catch (FileNotFoundException e) {
+            log.info("file not found " + filepath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
+
+    /**
+     * gets the property
+     *
+     * @param configname
+     * @return
+     */
+    public static String getProperty(String configname) {
+        return properties.getProperty(configname);
+    }
 
 }

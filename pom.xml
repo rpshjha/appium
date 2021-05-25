@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.rpshjha</groupId>
-	<artifactId>appium-cucumber-sample</artifactId>
+	<artifactId>appium-sample-project</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<build>
@@ -32,6 +32,18 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>testng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -39,7 +51,7 @@
 	<properties>
 
 		<platformName>Android</platformName>
-		<testng.version>7.1.0</testng.version>
+		<testng.version>7.4.0</testng.version>
 		<appium.version>7.3.0</appium.version>
 		<tess4j.version>3.2.1</tess4j.version>
 		<cucumber.version>5.7.0</cucumber.version>
@@ -59,6 +71,14 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.9</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>${testng.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 
 		<!-- cucumber dependency -->
 		<dependency>
@@ -83,12 +103,6 @@
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-testng</artifactId>
 			<version>${cucumber.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>tech.grasshopper</groupId>
-			<artifactId>extentreports-cucumber5-adapter</artifactId>
-			<version>1.2.0</version>
 		</dependency>
 
 		<dependency>
