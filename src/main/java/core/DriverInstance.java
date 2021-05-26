@@ -1,83 +1,68 @@
 package core;
 
-import java.io.File;
-import java.io.IOException;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import lombok.extern.java.Log;
-
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.logging.LogEntry;
-
-
 import com.testvagrant.commons.entities.DeviceDetails;
-
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.remote.MobilePlatform;
+import lombok.extern.java.Log;
+import org.openqa.selenium.WebElement;
 import utilities.AppiumServer;
-import utilities.ConfigReader;
+
 
 @Log
 public class DriverInstance {
 
-	private static final ThreadLocal<AppiumDriver<WebElement>> appiumDriver = new ThreadLocal<AppiumDriver<WebElement>>();
+    private static final ThreadLocal<AppiumDriver<WebElement>> appiumDriver = new ThreadLocal<AppiumDriver<WebElement>>();
 
-	private DriverInstance() {
-	}
+    private DriverInstance() {
+    }
 
-	/**
-	 * set up appium driver based on platform provided in config file
-	 * 
-	 * @param deviceDetails
-	 * @param systemPort
-	 * @param systemPort
-	 * @param appiumPort
-	 * 
-	 * @return appiumDriver {@link AppiumDriver}
-	 */
+    /**
+     * set up appium driver based on platform provided in config file
+     *
+     * @param deviceDetails
+     * @param systemPort
+     * @param systemPort
+     * @param appiumPort
+     * @return appiumDriver {@link AppiumDriver}
+     */
 
-	public static AppiumDriver<WebElement> setUpAppiumDriver(DeviceDetails deviceDetails, String systemPort,
-			String appiumPort) {
+    public static AppiumDriver<WebElement> setUpAppiumDriver(DeviceDetails deviceDetails, String systemPort,
+                                                             String appiumPort) {
 
-		switch (System.getProperty("platformName")) {
+        switch (System.getProperty("platformName")) {
 
-		case MobilePlatform.ANDROID:
-			return AndroidManager.createAndroidDriver(deviceDetails, systemPort, appiumPort);
+            case MobilePlatform.ANDROID:
+                return AndroidManager.createAndroidDriver(deviceDetails, systemPort, appiumPort);
 
-		case MobilePlatform.IOS:
-			return IOSManager.createIOSDriver();
+            case MobilePlatform.IOS:
+                return IOSManager.createIOSDriver();
 
-		default:
-			System.err.println("enter platformName as Android or iOS");
-			return null;
-		}
+            default:
+                System.err.println("enter platformName as Android or iOS");
+                return null;
+        }
 
-	}
+    }
 
-	/**
-	 * 
-	 * @return {@link AppiumDriver}
-	 */
-	public static AppiumDriver<WebElement> getAppiumDriver() {
-		return appiumDriver.get();
-	}
+    /**
+     * @return {@link AppiumDriver}
+     */
+    public static AppiumDriver<WebElement> getAppiumDriver() {
+        return appiumDriver.get();
+    }
 
-	/**
-	 * quit appium session
-	 */
-	public static void quitAppiumDriver() {
+    /**
+     * quit appium session
+     */
+    public static void quitAppiumDriver() {
 
-		if (appiumDriver.get() != null) {
-			log.info("quitting appium session");
+        if (appiumDriver.get() != null) {
+            log.info("quitting appium session");
 
-			appiumDriver.get().quit();
-			appiumDriver.remove();
-			AppiumServer.stopServer();
-		}
-	}
+            appiumDriver.get().quit();
+            appiumDriver.remove();
+            AppiumServer.stopServer();
+        }
+    }
 
 }

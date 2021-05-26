@@ -14,6 +14,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import utilities.AppiumServer;
+import utilities.ConfigReader;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -60,14 +61,11 @@ public class IOSManager {
         DesiredCapabilities cap = new DesiredCapabilities();
 
         cap.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.IOS);
-        cap.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone 12 Pro Max");
-        cap.setCapability(MobileCapabilityType.UDID, "50438D4D-DAD5-46F4-928E-7D973075EAF6");
+        cap.setCapability(MobileCapabilityType.DEVICE_NAME, ConfigReader.getProperty("deviceName"));
+        cap.setCapability(MobileCapabilityType.UDID, ConfigReader.getProperty("udid"));
         cap.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.IOS_XCUI_TEST);
-        cap.setCapability(IOSMobileCapabilityType.BUNDLE_ID, "com.example.apple-samplecode.UICatalog");
-
-        String appurl = System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator + "resources" + File.separator + "apk" + File.separator + "UIKitCatalog-iphonesimulator.app";
-        cap.setCapability(MobileCapabilityType.APP, appurl);
-
+        cap.setCapability(IOSMobileCapabilityType.BUNDLE_ID, ConfigReader.getProperty("bundleId"));
+        cap.setCapability(MobileCapabilityType.APP, new File(ConfigReader.getProperty("apk")).getPath());
 
         return cap;
     }

@@ -47,16 +47,35 @@ public class EmulatorControls {
 
         } else {
             System.out.println("Starting emulator ->> " + nameOfAVD);
-            String[] aCommand = new String[]{emulatorPath, "-avd", nameOfAVD};
-            try {
-                process = new ProcessBuilder(aCommand).start();
-                process.waitFor(40, TimeUnit.SECONDS);
-                if (isEmulatorOrDeviceRunning())
-                    System.out.println("Emulator ->> " + nameOfAVD + " launched successfully!");
-                else
-                    throw new Exception("Emulator ->> " + nameOfAVD + " could not be launched");
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            if (System.getProperty("platformName").equals(MobilePlatform.ANDROID)) {
+                String[] aCommand = new String[]{emulatorPath, "-avd", nameOfAVD};
+                try {
+                    process = new ProcessBuilder(aCommand).start();
+                    process.waitFor(40, TimeUnit.SECONDS);
+                    if (isEmulatorOrDeviceRunning())
+                        System.out.println("Emulator ->> " + nameOfAVD + " launched successfully!");
+                    else
+                        throw new Exception("Emulator ->> " + nameOfAVD + " could not be launched");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (System.getProperty("platformName").equals(MobilePlatform.IOS)) {
+
+                String commandName = "/Users/rupeshkumar/Library/Android/sdk/emulator/emulator -avd " + nameOfAVD + " -netdelay none -netspeed full";
+
+                ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash", "-c", commandName);
+                processBuilder.redirectErrorStream(true);
+                Process p = null;
+                try {
+                    p = processBuilder.start();
+                    BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    String line;
+                    line = r.readLine();
+                    System.out.println(line);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -107,15 +126,5 @@ public class EmulatorControls {
         return isRunning;
     }
 
-    public static void main(String[] args) throws IOException {
 
-//        EmulatorControls.launchEmulator("Pixel");
-
-//        String nameOfAvd = "Pixel";
-//        String commandName = "/Users/rupeshkumar/Library/Android/sdk/emulator/emulator -avd " + nameOfAvd + " -netdelay none -netspeed full";
-//
-//        System.out.println(commandName);
-//        Runtime runtime = Runtime.getRuntime();
-//        Process process = runtime.exec(commandName);
-    }
 }

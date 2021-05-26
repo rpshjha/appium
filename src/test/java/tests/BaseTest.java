@@ -9,6 +9,7 @@ import org.openqa.selenium.InvalidArgumentException;
 import org.testng.annotations.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -19,6 +20,7 @@ public class BaseTest {
     public void beforeTest() {
         log.info("INSIDE BEFORE TEST");
 //        System.setProperty("platformName", MobilePlatform.IOS);
+        System.setProperty("platformName", MobilePlatform.ANDROID);
     }
 
     @Parameters({"systemPort", "appiumPort"})
@@ -28,18 +30,28 @@ public class BaseTest {
         log.info("INSIDE BEFORE METHOD " + this.getClass().getCanonicalName());
 
         if (System.getProperty("platformName").equals(MobilePlatform.ANDROID)) {
-            List<DeviceDetails> androidDevices = new Android().getDevices();
 
-            int random = new Random().nextInt(androidDevices.size());
+            List<DeviceDetails> androidDevices = new ArrayList<>();
+            try {
+                androidDevices = new Android().getDevices();
+                int random = new Random().nextInt(androidDevices.size());
 
-            System.out.println("deviceName: " + androidDevices.get(0).getDeviceName() + "\ndeviceUDID: "
-                    + androidDevices.get(0).getUdid() + "\nplatformVersion: " + androidDevices.get(0).getOsVersion()
-                    + " \nsystemPort: " + systemPort);
+                System.out.println("deviceName: " + androidDevices.get(0).getDeviceName() + "\ndeviceUDID: "
+                        + androidDevices.get(0).getUdid() + "\nplatformVersion: " + androidDevices.get(0).getOsVersion()
+                        + " \nsystemPort: " + systemPort);
 
-            DriverInstance.setUpAppiumDriver(androidDevices.get(0), systemPort, appiumPort);
-        }
+            } catch (com.testvagrant.mdb.Exceptions.ConnectedDevicesException e) {
+                log.severe("Could not find any devices, are any devices available?");
+            } catch (IllegalArgumentException e){
+                log.severe("no devices found");
+            }
 
-        else if(System.getProperty("platformName").equals(MobilePlatform.IOS)){
+            if (!androidDevices.isEmpty())
+                DriverInstance.setUpAppiumDriver(androidDevices.get(0), systemPort, appiumPort);
+            else
+                DriverInstance.setUpAppiumDriver(null, systemPort, appiumPort);
+
+        } else if (System.getProperty("platformName").equals(MobilePlatform.IOS)) {
 
             DriverInstance.setUpAppiumDriver(null, null, null);
         }

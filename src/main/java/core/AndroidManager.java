@@ -34,7 +34,7 @@ public class AndroidManager {
      * @return AndroidDriver
      */
     public static AndroidDriver<WebElement> createAndroidDriver(DeviceDetails deviceDetails, String systemPort,
-                                                                 String appiumPort) {
+                                                                String appiumPort) {
         AndroidDriver<WebElement> androidDriver = null;
         try {
             DesiredCapabilities cap = setAndroidCapability(deviceDetails, systemPort);
@@ -84,21 +84,22 @@ public class AndroidManager {
         int newCommandTimeout = Integer.parseInt(ConfigReader.getProperty("newCommandTimeout"));
 
         if (systemPort == null)
-            System.err.println("system port NOT received, ignoring system port capability");
+            log.info("system port NOT received, ignoring system port capability");
         else if (!systemPort.isEmpty())
             cap.setCapability(AndroidMobileCapabilityType.SYSTEM_PORT, Integer.valueOf(systemPort));
 
-        /*
-         * specify path for apk and specify appPackage based on env
-         */
 
-        String app = new File(ConfigReader.getProperty("apk")).getPath();
+        if (deviceDetails == null) {
+            cap.setCapability(AndroidMobileCapabilityType.AVD, ConfigReader.getProperty("nameOfAVD"));
+            cap.setCapability(MobileCapabilityType.DEVICE_NAME, ConfigReader.getProperty("nameOfAVD"));
+        } else {
+            cap.setCapability(MobileCapabilityType.UDID, deviceDetails.getUdid());
+            cap.setCapability(MobileCapabilityType.DEVICE_NAME, deviceDetails.getDeviceName());
+            cap.setCapability(MobileCapabilityType.PLATFORM_VERSION, deviceDetails.getOsVersion());
+        }
 
         cap.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.ANDROID);
-        cap.setCapability(MobileCapabilityType.UDID, deviceDetails.getUdid());
-        cap.setCapability(MobileCapabilityType.DEVICE_NAME, deviceDetails.getDeviceName());
-        cap.setCapability(MobileCapabilityType.PLATFORM_VERSION, deviceDetails.getOsVersion());
-        cap.setCapability(MobileCapabilityType.APP, app);
+        cap.setCapability(MobileCapabilityType.APP, new File(ConfigReader.getProperty("apk")).getPath());
         cap.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, ConfigReader.getProperty("appPackage"));
         cap.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, ConfigReader.getProperty("appActivity"));
         cap.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, newCommandTimeout);
