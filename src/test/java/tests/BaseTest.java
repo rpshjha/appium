@@ -19,7 +19,6 @@ public class BaseTest {
     @BeforeTest
     public void beforeTest() {
         log.info("INSIDE BEFORE TEST");
-//        System.setProperty("platformName", MobilePlatform.IOS);
         System.setProperty("platformName", MobilePlatform.ANDROID);
     }
 
