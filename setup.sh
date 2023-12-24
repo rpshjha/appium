@@ -26,13 +26,10 @@ unzip sdk-tools.zip -d "$SDK_DIR"
 # Create a temporary directory within SDK_DIR to facilitate the move operation
 TEMP_DIR="$SDK_DIR/temp/latest/"
 mkdir -p "$TEMP_DIR"
-
 # Move the contents of cmdline-tools into the temp directory
 mv "$SDK_DIR/cmdline-tools/"* "$TEMP_DIR/"
-
 # Rename the temporary directory to 'latest'
 mv "$TEMP_DIR" "$SDK_DIR/cmdline-tools/latest"
-
 # Remove the temporary directory
 rm -rf "$SDK_DIR/temp"
 
@@ -41,6 +38,8 @@ export ANDROID_HOME="$SDK_DIR"
 export ANDROID_SDK_ROOT="$ANDROID_HOME"
 export PATH=$JAVA_HOME/bin:$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools
 
+# Add platform-tools directory to the PATH
+export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
 
 # Accept Android SDK licenses
 yes | sdkmanager --licenses
@@ -58,8 +57,12 @@ yes | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "s
 echo "no" | avdmanager create avd -n test -k "system-images;android-34;google_apis_playstore;x86_64" --device "Nexus 5X" --abi "x86_64" --force
 
 # Start the emulator
-emulator -avd test -no-snapshot
+emulator -avd test -no-snapshot &
 
+# Wait for the emulator to be fully launched
+echo "Waiting for the emulator to start..."
+while [ -z "$(adb shell getprop sys.boot_completed 2>&1 | tr -d '\r')" ]; do
+    sleep 1
+done
 
-# Clean up
-rm -f sdk-tools.zip
+echo "Emulator is ready."
